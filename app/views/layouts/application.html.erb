@@ -12,7 +12,9 @@
   <%= content_tag(:div, value, class: "#{key}") %>
 <% end %>
 
-<%= link_to 'Signin with Google', user_omniauth_authorize_path(:google_oauth2) %>
+<% if current_user then %>
+  <%= link_to_unless_current I18n.t('layouts.application.submit_profile'), new_user_profile_path %>
+<% end %>
 
 <%= yield %>
 

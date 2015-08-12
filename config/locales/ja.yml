@@ -3,3 +3,11 @@ ja:
     update:
       flash_edited: "編集しました。"
 
+  layouts:
+    application:
+      submit_profile: "プロフィール登録"
+
+  devise:
+    omniauth_callbacks:
+      success: "Googleでログインしました。"
+

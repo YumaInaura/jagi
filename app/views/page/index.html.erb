@@ -1,0 +1,12 @@
+<h2>ユーザー情報</h2>
+
+  <% if current_user then %>
+    <ul>
+      <li><%= current_user.name %></li>
+      <li><%= current_user.provider %></li>
+      <li><%= current_user.uid %></li>
+      <li><%= current_user.email %></li>
+    </ul>
+  <% else %>
+    ログインしていません。<%= link_to 'Googleでログイン', user_omniauth_authorize_path(:google_oauth2) %>してください。
+  <% end %>
