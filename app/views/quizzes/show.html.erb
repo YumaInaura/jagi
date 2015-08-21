@@ -1,3 +1,15 @@
+<% if flash[:answer_name] %>
+  <div id="quiz_result">
+    <%= image_tag flash[:image_url] if flash[:image_url].present? %>
+    <%= content_tag :li, flash[:name] if flash[:name].present? %>
+    <%= content_tag :li, flash[:answer_name] if flash[:answer_name].present? %>
+    <%= content_tag :li, flash[:joined_year] if flash[:joined_year].present? %>_
+    <%= content_tag :li, flash[:group] if flash[:group].present? %>
+    <%= content_tag :li, flash[:project] if flash[:project].present? %>
+    <%= content_tag :li, flash[:detail] if flash[:detail].present? %>
+  </div>
+<% end %>
+
 <div id="user_image">
   <% if @profile_image_normal %>
     <%= image_tag @profile_image_normal.image.url %>

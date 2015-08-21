@@ -25,4 +25,14 @@ class UserProfile < ActiveRecord::Base
   def total_incorrect
     Answer.where(correct: false, user_profile_id: self.id).count
   end
+
+  def find_image(situation)
+    profile_image = ProfileImage.find_by(user_profile_id: self.id, situation: situation)
+    profile_image.present? ? profile_image.image : nil
+  end
+
+  def find_image_url(situation)
+    image = find_image(situation)
+    image.present? ? image.url : nil
+  end
 end

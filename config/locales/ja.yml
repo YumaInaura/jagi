@@ -33,7 +33,8 @@ ja:
     show:
       correct: "正解"
       incorrect: "不正解"
-      incorrect_result: "不正解！ 正解は「%{answer_name}」さんです"
+      correct_result: "正解です！"
+      incorrect_result: "不正解！"
       no_answer_users: "ユーザーがひとりも登録されていません。"
       who: "これは誰？"
 

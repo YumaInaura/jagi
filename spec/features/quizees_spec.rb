@@ -31,6 +31,11 @@ feature "quiz page", type: :feature do
           expect(page).not_to have_css('div.notice', text: I18n.t('quiz.show.incorrect'))
         end
 
+        scenario '相手のプロフィールが表示される ' do
+          expect(page).to have_css('li', text: answer_user_profile.name)
+          expect(page).to have_css('li', text: answer_user_profile.answer_name)
+        end
+
         scenario '回答履歴に正解が記録される' do
           expect(page).to have_css('#total_correct', I18n.t('quiz.show.correct'))
           expect(page).to have_css('#total_correct', text: '1')

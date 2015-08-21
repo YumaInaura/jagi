@@ -11,7 +11,7 @@ class ProfileImage < ActiveRecord::Base
     [:normal, :correct, :incorrect]
   end
 
-  def self.save_image (params)
+  def self.save_image(params)
     return unless params[:image]
 
     profile_image = ProfileImage.find_or_create_by(user_profile_id: params[:user_profile_id] , situation: params[:situation])
