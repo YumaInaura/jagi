@@ -12,6 +12,10 @@
   <%= content_tag(:div, value, class: "#{key}") %>
 <% end %>
 
+<% if current_user %>
+  <%= link_to I18n.t('layouts.application.ranking'), ranking_index_path %>
+<% end %>
+
 <%= yield %>
 
 </body>
