@@ -9,7 +9,7 @@ class QuizzesController < ApplicationController
   def answer
     @answer_user_profile = UserProfile.find(params[:answer_user_id])
 
-    if @answer_user_profile.answer_name == params[:answer_user_name]
+    if @answer_user_profile.correct? params[:answer_user_name]
       flash[:image_url] = @answer_user_profile.find_image_url('correct')
       case_correct
     else

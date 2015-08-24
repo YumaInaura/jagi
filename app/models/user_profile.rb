@@ -18,6 +18,13 @@ class UserProfile < ActiveRecord::Base
     self.class.all.sample
   end
 
+  def correct?(answer)
+    result = false
+    result = true if answer == self.name
+    result = true if self.answer_name.present? && answer == self.answer_name
+    result
+  end
+
   def total_correct
     Answer.where(correct: true, user_profile_id: self.id).count
   end
