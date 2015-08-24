@@ -15,6 +15,13 @@ gem 'omniauth-google-oauth2'
 gem 'carrierwave'
 gem 'rmagick'
 
+group :development do
+  gem 'capistrano', '~> 3.2.1'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-bundler'
+end
+
 group :test, :development do
   gem 'spring'
   gem 'spring-commands-rspec'
