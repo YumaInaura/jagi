@@ -14,7 +14,7 @@
   - if @question.gender == 'male'
     %div= I18n.t('common.male')
   - else
-    %div= I18n.t('common.famale')
+    %div= I18n.t('common.female')
   %div= "#{@question.joined_year}#{I18n.t('user_profiles.edit.year')}"
   %div= @question.group.try(:name)
   %div= @question.project.try(:name)

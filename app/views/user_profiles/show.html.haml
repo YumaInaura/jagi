@@ -8,7 +8,7 @@
   - if current_user.user_profile.gender == 'male'
     %li= I18n.t('user_profiles.edit.male')
   - else
-    %li= I18n.t('user_profiles.edit.famale')
+    %li= I18n.t('user_profiles.edit.female')
   %li= "#{current_user.user_profile.joined_year}#{I18n.t('user_profiles.edit.year')}"
   %li= current_user.user_profile.group.try(:name)
   %li= current_user.user_profile.project.try(:name)
