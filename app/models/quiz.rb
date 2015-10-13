@@ -59,23 +59,23 @@ class Quiz
 
   class << self
     def correct?(user_profile, answer_text)
-      answer_text.strip!
-      return false if answer_text.blank?
+      striped_answer_text = answer_text.strip
+      return false if striped_answer_text.blank?
 
-      converting_match(answer_text, user_profile.answer_name) ||
-      fazzy_match(answer_text, user_profile.name) ||
-      natural_language_match(answer_text, user_profile.name)
+      converting_match(striped_answer_text, user_profile.answer_name) ||
+      fazzy_match(striped_answer_text, user_profile.name) ||
+      natural_language_match(striped_answer_text, user_profile.name)
     end
 
     # 氏名等をゆるく判定 (最初か最後の文字が、ある程度一致したらマッチ)
     def fazzy_match(answer_text, full_name)
       return false if answer_text.blank? || full_name.blank?
 
-      (
+      !!(
       katakana_to_hiragana(answer_text) == full_name ||
       katakana_to_hiragana(answer_text).match("^#{full_name[0..1]}") ||
       katakana_to_hiragana(answer_text).match("#{full_name[-2..-1]}$")
-      ) && true || false
+      )
     end
 
     def converting_match(answer_text, name)
@@ -99,14 +99,14 @@ class Quiz
       return false if answer_text.blank? || full_name.blank?
 
       last_name_length = ((full_name.length+1)/2)-1
-      (katakana_to_hiragana(answer_text).match("^#{full_name[0..last_name_length]}") && true) || false
+      !!(katakana_to_hiragana(answer_text).match("^#{full_name[0..last_name_length]}"))
     end
 
     def first_name_match(answer_text, full_name)
       return false if answer_text.blank? || full_name.blank?
 
       first_name_length = (-(full_name.length)/2)+1
-      (katakana_to_hiragana(answer_text).match("#{full_name[first_name_length..-1]}$") && true) || false
+      !!(katakana_to_hiragana(answer_text).match("#{full_name[first_name_length..-1]}$"))
     end
 
     def katakana_to_hiragana(answer_text)
