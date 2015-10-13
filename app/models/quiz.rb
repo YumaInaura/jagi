@@ -57,36 +57,60 @@ class Quiz
       shuffle
   end
 
-  def self.correct?(user_profile, answer_text)
-    answer_text.strip!
-    converted_answer_text = NKF.nkf("--hiragana -w", answer_text)
+  class << self
+    def correct?(user_profile, answer_text)
+      answer_text.strip!
+      return false if answer_text.blank?
 
-    # ユーザーが決めた正解文字列での判定 (ひらがな入力でもカタカナ入力でも等しく判定する)
-    if NKF.nkf("--hiragana -w", user_profile.answer_name) == converted_answer_text
-      return true
-    # Google認証情報の氏名使って判定 (完全一致)
-    elsif user_profile.user.name == answer_text
-      return true
-    # Google認証情報の氏名使って、苗字をゆるく判定 (最初の二文字が一致すれば正解)
-    elsif answer_text.match("^#{user_profile.user.name[0..1]}")
-      return true
-    # Google認証情報の氏名を使って、名前をゆるく判定 (ラストの二文字が一致すれば正解)
-    elsif answer_text.match("#{user_profile.user.name[-2..-1]}$")
-      return true
-    # Google認証情報の漢字氏名を、ひらがなに自動変換して判定する
-    else
-      hiragana_full_name = `printf '#{user_profile.name}' | nkf -e | kakasi -JH | nkf -w`
-      last_name_length = ((hiragana_full_name.length+1)/2)-1
-      first_name_length = (-(hiragana_full_name.length)/2)+1
-
-      if converted_answer_text == hiragana_full_name
-        return true
-      elsif converted_answer_text.match("^#{hiragana_full_name[0..last_name_length]}")
-        return true
-      elsif converted_answer_text.match("#{hiragana_full_name[first_name_length..-1]}$")
-        return true
-      end
+      converting_match(answer_text, user_profile.answer_name) ||
+      fazzy_match(answer_text, user_profile.name) ||
+      natural_language_match(answer_text, user_profile.name)
     end
-    false
+
+    # 氏名等をゆるく判定 (最初か最後の文字が、ある程度一致したらマッチ)
+    def fazzy_match(answer_text, full_name)
+      return false if answer_text.blank? || full_name.blank?
+
+      (
+      katakana_to_hiragana(answer_text) == full_name ||
+      katakana_to_hiragana(answer_text).match("^#{full_name[0..1]}") ||
+      katakana_to_hiragana(answer_text).match("#{full_name[-2..-1]}$")
+      ) && true || false
+    end
+
+    def converting_match(answer_text, name)
+      return false if answer_text.blank? || name.blank?
+
+      katakana_to_hiragana(name) == katakana_to_hiragana(answer_text)
+    end
+
+    # 漢字氏名を自然言語処理でひらがなに変えて判定
+    def natural_language_match(answer_text, full_name)
+      return false if answer_text.blank? || full_name.blank?
+
+      hiragana_full_name = `printf '#{full_name}' | nkf -e | kakasi -JH | nkf -w`
+
+      converting_match(answer_text, hiragana_full_name) ||
+      last_name_match(answer_text, hiragana_full_name) ||
+      first_name_match(answer_text, hiragana_full_name)
+    end
+
+    def last_name_match(answer_text, full_name)
+      return false if answer_text.blank? || full_name.blank?
+
+      last_name_length = ((full_name.length+1)/2)-1
+      (katakana_to_hiragana(answer_text).match("^#{full_name[0..last_name_length]}") && true) || false
+    end
+
+    def first_name_match(answer_text, full_name)
+      return false if answer_text.blank? || full_name.blank?
+
+      first_name_length = (-(full_name.length)/2)+1
+      (katakana_to_hiragana(answer_text).match("#{full_name[first_name_length..-1]}$") && true) || false
+    end
+
+    def katakana_to_hiragana(answer_text)
+      NKF.nkf("--hiragana -w", answer_text)
+    end
   end
 end
