@@ -4,6 +4,15 @@ RSpec.describe AnswerMatch, type: :model do
   describe '.with_convert' do
     subject { AnswerMatch.with_convert(answer, correct_answer) }
 
+    context 'when correct answer is downcase' do
+      let(:correct_answer) { 'John' }
+      let(:answer) { 'john' }
+
+      it 'upcase answer matches' do
+        expect(subject).to eq true
+      end
+    end
+
     context 'when correct answer is hiragana' do
       let(:correct_answer) { 'はんざわ' }
       let(:answer) { 'ハンザワ' }

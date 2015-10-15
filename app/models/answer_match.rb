@@ -17,7 +17,7 @@ class AnswerMatch
     def with_convert(answer_text, name)
       return false if answer_text.blank? || name.blank?
 
-      katakana_to_hiragana(name) == katakana_to_hiragana(answer_text)
+      katakana_to_hiragana(name).upcase == katakana_to_hiragana(answer_text).upcase
     end
 
     # 漢字氏名を自然言語処理でひらがなに変えて判定
