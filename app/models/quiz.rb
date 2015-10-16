@@ -1,6 +1,4 @@
 class Quiz
-  require 'nkf'
-
   attr_accessor :total, :correct, :incorrect
 
   def initialize(params)
@@ -57,20 +55,18 @@ class Quiz
       shuffle
   end
 
-  def self.correct?(user_profile, answer_text)
-    # ユーザーが決めた正解文字列での判定 (ひらがな入力でもカタカナ入力でも等しく判定する)
-    if NKF.nkf("--hiragana -w", user_profile.answer_name) == NKF.nkf("--hiragana -w", answer_text)
-      return true
-    # Google認証情報の氏名使って判定 (完全一致)
-    elsif user_profile.user.name == answer_text
-      return true
-    # Google認証情報の氏名使って、苗字をゆるく判定 (最初の二文字が一致すれば正解)
-    elsif answer_text.match("^#{user_profile.user.name[0..1]}")
-      return true
-    # Google認証情報の氏名を使って、名前をゆるく判定 (ラストの二文字が一致すれば正解)
-    elsif answer_text.match("#{user_profile.user.name[-2..-1]}$")
-      return true
+  class << self
+    def correct?(user_profile, answer_text)
+      striped_answer_text = answer_text.strip
+      return false if striped_answer_text.blank?
+
+      AnswerMatch.with_convert(striped_answer_text, user_profile.answer_name) ||
+      AnswerMatch.with_fuzzy_on_full_name(striped_answer_text, user_profile.name) ||
+      AnswerMatch.with_natural_language_on_full_name(striped_answer_text, user_profile.name)
     end
-    false
+
+    def katakana_to_hiragana(answer_text)
+      NKF.nkf("--hiragana -w", answer_text)
+    end
   end
 end

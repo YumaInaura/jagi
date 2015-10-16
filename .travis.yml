@@ -3,10 +3,17 @@ rvm:
   - 2.2.2
 bundler_args: --without development --deployment
 cache: bundler
-sudo: false
+sudo: true
 before_script:
   - cp config/database.travis.yml config/database.yml
   - bundle exec rake db:create
   - bundle exec rake db:migrate
 script:
+  - wget http://kakasi.namazu.org/stable/kakasi-2.3.6.tar.gz
+  - tar zxfv kakasi-2.3.6.tar.gz
+  - cd kakasi-2.3.6/
+  - ./configure
+  - make
+  - sudo make install
+
   - bundle exec rspec spec
